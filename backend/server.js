@@ -3,6 +3,7 @@ const mongoose=require("mongoose")
 const dotenv=require("dotenv")
 const cors=require("cors")
 const app=express()
+const authRoutes=require("./routes/authRoutes")
 
 dotenv.config()
 
@@ -12,9 +13,7 @@ app.use(express.json())
 app.use("/uploads",express.static("uploads"))
 
 //route
-app.get('/',(req,res)=>{
-    res.status(200).send("Welcome to the root URL of the server")
-})
+app.use("/api/auth",authRoutes)
 
 //db connection
 mongoose.connect(process.env.MONGO_URL).then(()=>{
