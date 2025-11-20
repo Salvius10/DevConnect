@@ -1,5 +1,5 @@
 const User=require("../models/User")
-const bcrypt=require("bcrypt")
+const bcrypt=require("bcryptjs")
 const jwt=require("jsonwebtoken")
 
 exports.register=async (req,res)=>{
@@ -13,8 +13,27 @@ exports.register=async (req,res)=>{
             email,
             password:hashed
         })
-        res.json({msg:"User registered successfully"})    
+         await user.save();
+
+        // Create token
+        const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+        );
+
+        // Send everything back
+        res.status(201).json({
+        msg: "User registered successfully",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+        },
+        token,
+        });  
     } catch (err) {
+        console.log("REGISTER ERROR:", err);
         res.status(500).json({error:err.message})
     }
 }
@@ -31,8 +50,27 @@ exports.login=async (req,res)=>{
             process.env.JWT_SECRET,
             {expiresIn:"7d"}
         )
-        res.json({token,user})
+        res.json({
+        msg: "Login successful",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+        },
+        token,
+        });
     } catch (err) {
+        console.log("LOGIN ERROR:", err);
         res.status(500).json({error:err.message})
     }
+}
+
+exports.me=async (req,res)=>{
+    try {
+        const user=await User.findById(req.user).select("-password")
+        res.json(user)    
+    } catch (err) {
+        res.status(500).json({error:err.message})    
+    }
+    
 }

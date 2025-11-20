@@ -8,13 +8,12 @@ import ProtectedRoute from './components/ProtectedRoute'
 const App = () => {
   return (
     <BrowserRouter>
-      <Navbar>
+      <Navbar/>
         <Routes>
           <Route path='/' element={<ProtectedRoute><Home/></ProtectedRoute>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/register' element={<Register/>}/>
         </Routes>
-      </Navbar>
     </BrowserRouter>
   )
 }
