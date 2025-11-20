@@ -1,10 +1,11 @@
 import React from 'react'
+import { useContext } from 'react'
 import { useState,createContext } from 'react'
 
 export const AuthContext=createContext()
 
 export const AuthProvider=({children})=>{
-    const [user,setUser]=useState(JSON.parse(localStorage.getItem("devconnect-user") || null))
+    const [user,setUser]=useState(JSON.parse(localStorage.getItem("devconnect-user")) || null)
     const [token,setToken]=useState(localStorage.getItem("devconnect-token") || null)
 
     const login=(userData,jwtToken)=>{
@@ -16,7 +17,7 @@ export const AuthProvider=({children})=>{
 
     const logout=()=>{
         setUser(null)
-        setToken("")
+        setToken(null)
         localStorage.removeItem("devconnect-user")
         localStorage.removeItem("devconnect-token")
     }
@@ -27,3 +28,4 @@ export const AuthProvider=({children})=>{
     )
 }
 
+export const useAuth=()=>useContext(AuthContext)
