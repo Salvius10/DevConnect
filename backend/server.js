@@ -4,6 +4,7 @@ const dotenv=require("dotenv")
 const cors=require("cors")
 const app=express()
 const authRoutes=require("./routes/authRoutes")
+const userRoutes=require("./routes/userRoutes")
 
 dotenv.config()
 
@@ -14,7 +15,7 @@ app.use("/uploads",express.static("uploads"))
 
 //route
 app.use("/api/auth",authRoutes)
-
+app.use("api/user",userRoutes)
 //db connection
 console.log("Connecting Db...")
 mongoose.connect(process.env.MONGO_URL).then(()=>{
