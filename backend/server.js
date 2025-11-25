@@ -15,7 +15,7 @@ app.use("/uploads",express.static("uploads"))
 
 //route
 app.use("/api/auth",authRoutes)
-app.use("api/user",userRoutes)
+app.use("/api/user",userRoutes)
 //db connection
 console.log("Connecting Db...")
 mongoose.connect(process.env.MONGO_URL).then(()=>{

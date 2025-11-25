@@ -5,8 +5,11 @@ import { useState,createContext } from 'react'
 export const AuthContext=createContext()
 
 export const AuthProvider=({children})=>{
-    const [user,setUser]=useState(JSON.parse(localStorage.getItem("devconnect-user")) || null)
-    const [token,setToken]=useState(localStorage.getItem("devconnect-token") || null)
+    const storedUser = localStorage.getItem("devconnect-user");
+    const storedToken = localStorage.getItem("devconnect-token");
+
+    const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
+    const [token, setToken] = useState(storedToken || null);
 
     const login=(userData,jwtToken)=>{
         setUser(userData)
