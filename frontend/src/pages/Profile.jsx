@@ -4,7 +4,7 @@ import { useState } from 'react'
 import {useAuth} from "../context/AuthContext"
 import axios from 'axios'
 import { Link } from "react-router-dom";
-
+import UploadPhoto from './UploadPhoto'
 const Profile = () => {
     const {user,token}=useAuth()
     const [profile,setProfile]=useState(null)
@@ -27,13 +27,20 @@ const Profile = () => {
   return (
     <div>
         <h2>My Profile</h2>
-        {profile.profilephoto && (
+        {profile.profilephoto? (
             <img 
             src={`http://localhost:5000/${profile.profilephoto}`}
             alt='Profile'
             width="120"
             />
+        ): (
+        <p>No profile photo uploaded.</p>
         )}
+        <UploadPhoto
+        onUpload={(newPath) => {
+          setProfile({ ...profile, profilephoto: newPath });
+        }}
+      />
         <p><b>Name:</b> {profile.name}</p>
         <p><b>Email:</b> {profile.email}</p>
         <p><b>Bio:</b> {profile.bio}</p>

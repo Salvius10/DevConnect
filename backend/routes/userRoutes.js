@@ -4,9 +4,7 @@ const upload=require("../middleware/upload")
 const {getUserProfiles,updateProfile}=require("../controllers/userController")
 const authMiddleware = require("../middleware/authMiddleware")
 const User=require("../models/User")
-router.get("/:id",authMiddleware,getUserProfiles)
-router.put("/update",authMiddleware,updateProfile)
-router.post("upload-photo",authMiddleware,upload.single("photo"),async (req,res)=>{
+router.post("/upload-photo",authMiddleware,upload.single("photo"),async (req,res)=>{
     try {
         const photoPath=req.file.path
         const user=await User.findByIdAndUpdate(
@@ -20,4 +18,6 @@ router.post("upload-photo",authMiddleware,upload.single("photo"),async (req,res)
     }
     
 })
+router.get("/:id",authMiddleware,getUserProfiles)
+router.put("/update",authMiddleware,updateProfile)
 module.exports=router
