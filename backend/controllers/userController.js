@@ -24,3 +24,53 @@ exports.updateProfile=async (req,res)=>{
         res.status(500).json({error:err.message})
     } 
 }
+
+exports.followUser=async (req,res)=>{
+    try {
+        const userId=req.user
+        const targetId=req.params.id
+        if (userId==targetId){
+            return res.status(400).json({msg:"You cannot follow yourself"})
+        }
+        const targetUser=await User.findByIdAndUpdate(targetId,{
+            $addToSet:{followers:userId}
+        },{new:true}).select("-password")
+
+        if (!targetUser){
+            return res.status(404).json({msg:"User not found"})
+        }
+
+        await User.findByIdAndUpdate(userId,{
+            $addToSet:{following:targetId}
+        },{new:true})
+
+        res.json(targetUser)    
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+}
+
+exports.unfollowUser=async (req,res)=>{
+    try {
+        const userId=req.user
+        const targetId=req.params.id
+        if (userId==targetId){
+            return res.status(400).json({msg:"You cannot unfollow yourself"})
+        }
+        const targetUser=await User.findByIdAndUpdate(targetId,{
+            $pull:{followers:userId}
+        },{new:true}).select("-password")
+        
+        if (!targetUser){
+            return res.status(404).json({msg:"User not found"})
+        }
+
+        await User.findByIdAndUpdate(userId,{
+            $pull:{following:targetId}
+        },{new:true})
+
+        res.json(targetUser)
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+}

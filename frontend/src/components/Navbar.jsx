@@ -12,7 +12,9 @@ const Navbar = () => {
             <span>Welcome, {user.name} </span>
             <button onClick={logout}>Logout</button>
             <Link to="/profile">Profile</Link>
+            <Link to="/developers">Developers</Link>
             
+
 
 
             </>

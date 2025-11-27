@@ -1,7 +1,7 @@
 const express=require("express")
 const router=express.Router()
 const upload=require("../middleware/upload")
-const {getUserProfiles,updateProfile}=require("../controllers/userController")
+const {getUserProfiles,updateProfile,followUser,unfollowUser}=require("../controllers/userController")
 const authMiddleware = require("../middleware/authMiddleware")
 const User=require("../models/User")
 router.post("/upload-photo",authMiddleware,upload.single("photo"),async (req,res)=>{
@@ -18,6 +18,16 @@ router.post("/upload-photo",authMiddleware,upload.single("photo"),async (req,res
     }
     
 })
+router.get("/",authMiddleware,async (req,res)=>{
+    try {
+        const users=await User.find().select("-password")
+        res.json(users)    
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+})
+router.post("/follow/:id", authMiddleware, followUser);
+router.post("/unfollow/:id", authMiddleware, unfollowUser);
 router.get("/:id",authMiddleware,getUserProfiles)
 router.put("/update",authMiddleware,updateProfile)
 module.exports=router
