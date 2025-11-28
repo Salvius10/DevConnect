@@ -28,6 +28,25 @@ router.get("/",authMiddleware,async (req,res)=>{
 })
 router.post("/follow/:id", authMiddleware, followUser);
 router.post("/unfollow/:id", authMiddleware, unfollowUser);
+router.get("/search",authMiddleware,async (req,res)=>{
+    try {
+        const {name,skills,location}=req.query
+        const filters={}
+        if (name){
+            filters.name={$regex:name,$options:"i"}
+        }
+        if (skills){
+            filters.skills={$regex:skills,$options:"i"}
+        }
+        if (location){
+            filters.location={$regex:location,$options:"i"}
+        }
+        const users=await User.find(filters).select("-password")
+        res.json(users)
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+})
 router.get("/:id",authMiddleware,getUserProfiles)
 router.put("/update",authMiddleware,updateProfile)
 module.exports=router
