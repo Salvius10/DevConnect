@@ -6,8 +6,9 @@ import { useParams } from 'react-router-dom'
 
 const DeveloperProfile = () => {
     const {id}=useParams()
-    const {token}=useAuth()
+    const {user,token}=useAuth()
     const [profile,setProfile]=useState(null)
+    const [loadingAction,setLoadingAction]=useState(false)
     useEffect(()=>{
         const fetchProfiles=async ()=>{
             try {
@@ -22,6 +23,34 @@ const DeveloperProfile = () => {
         fetchProfiles()
     },[id,token])
     if (!profile) return <p>Loading ...</p>
+    const isOwnProfile=user.id===id
+    const isFollowing=profile.followers?.includes(user.id)
+    const handleFollow=async ()=>{
+      try {
+        setLoadingAction(true)
+        const res=await axios.post(`http://localhost:5000/api/user/follow/${id}`,{},{
+          headers:{Authorization:token}
+        })
+        setProfile(res.data)
+      } catch (error) {
+        console.log("Follow error",error)
+      }finally{
+        setLoadingAction(false)
+      }
+    }
+    const handleUnfollow=async ()=>{
+      try {
+        setLoadingAction(true)
+        const res=await axios.post(`http://localhost:5000/api/user/unfollow/${id}`,{},{
+          headers:{Authorization:token}
+        })
+        setProfile(res.data)
+      } catch (error) {
+        console.log("Unfollow error",error)
+      }finally{
+        setLoadingAction(false)
+      }
+    }
   return (
     <div>
       <h2>{profile.name}'s Profile</h2>
@@ -31,6 +60,19 @@ const DeveloperProfile = () => {
         alt='Profile'
         width="120"
         />
+      )}
+      {!isOwnProfile && (
+        <div>
+          {isFollowing? (
+            <button onClick={handleUnfollow} disabled={loadingAction}>
+              {loadingAction?"Unfollowing...":"Unfollow"}
+            </button>   
+          ):(
+            <button onClick={handleFollow} disabled={loadingAction}>
+              {loadingAction? "Following...":"Follow"}
+            </button>
+          )}
+        </div>
       )}
       <p><b>Email:</b>{profile.email}</p>
       <p><b>Bio:</b>{profile.bio}</p>
