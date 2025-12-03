@@ -10,15 +10,15 @@ exports.createPost=async (req,res)=>{
             image,
         })
         await post.save()
-        res.jon(post)
+        res.json(post)
     } catch (err) {
-        res.status(500).json({error:error.message})
+        res.status(500).json({error:err.message})
     }
 }
 
 exports.getAllPosts=async (req,res)=>{
     try {
-        const post=(await Post.find().populate("author","name email profilephoto")).sort({createdAt:-1})
+        const post=await Post.find().populate("author","name email profilephoto").sort({createdAt:-1})
         res.json(post)
     } catch (err) {
         res.status(500).json({error:err.message})
@@ -47,6 +47,33 @@ exports.toggleLike=async (req,res)=>{
             post.likes=post.likes.filter(id=>id.toString()!==req.user)
         }
         await post.save()
+        res.json(post)
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+}
+
+exports.addComment=async (req,res)=>{
+    try {
+        const post=await Post.findById(req.params.id)
+        post.comments.push({
+            user:req.user,
+            text:req.body.content
+        })
+        await post.save()
+        res.json(post)
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+}
+
+exports.deletePost=async (req,res)=>{
+    try {
+        const post=await Post.findById(req.params.id)
+        if (post.author.toString()!==req.user){
+            res.json({msg:"User not authorized"})
+        }
+        await post.deleteOne()
         res.json(post)
     } catch (err) {
         res.status(500).json({error:err.message})
