@@ -29,7 +29,7 @@ exports.getFeed=async (req,res)=>{
     try {
         const following=req.userFollowing
         const userId=req.user
-        const post=await Post({
+        const post=await Post.find({
             author:{$in:[...following,userId]}
         }).populate("author","name email profilephoto").sort({createdAt:-1})
         res.json(post)
@@ -70,6 +70,9 @@ exports.addComment=async (req,res)=>{
 exports.deletePost=async (req,res)=>{
     try {
         const post=await Post.findById(req.params.id)
+         if (!post) {
+        return res.status(404).json({ msg: "Post not found" });
+        }
         if (post.author.toString()!==req.user){
             res.json({msg:"User not authorized"})
         }
@@ -79,3 +82,4 @@ exports.deletePost=async (req,res)=>{
         res.status(500).json({error:err.message})
     }
 }
+
