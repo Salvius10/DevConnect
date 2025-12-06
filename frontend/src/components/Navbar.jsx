@@ -14,6 +14,8 @@ const Navbar = () => {
             <Link to="/profile">Profile</Link>
             <Link to="/developers">Developers</Link>
             <Link to="/create-post">CreatePost</Link>
+            <Link to="/">Feed</Link>
+            <Link to="/all-posts">All Posts</Link>
             </>
         ):(
             <>

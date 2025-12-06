@@ -1,11 +1,7 @@
 import React from 'react'
-
-const Home = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+import Feed from './Feed'
+const Home = () => {  
+  return <Feed/>
 }
 
 export default Home

@@ -10,6 +10,7 @@ import EditPage from './pages/EditPage'
 import DeveloperProfile from './pages/DeveloperProfile'
 import Developers from './pages/Developers'
 import CreatePost from './pages/CreatePost'
+import AllPosts from './pages/AllPosts'
 const App = () => {
   return (
     <BrowserRouter>
@@ -23,6 +24,7 @@ const App = () => {
           <Route path='/developers' element={<ProtectedRoute><Developers/></ProtectedRoute>}/>
           <Route path='/developer/:id' element={<ProtectedRoute><DeveloperProfile/></ProtectedRoute>}/>
           <Route path='/create-post' element={<ProtectedRoute><CreatePost/></ProtectedRoute>}/>
+          <Route path="/all-posts" element={<ProtectedRoute><AllPosts /></ProtectedRoute>} />
 
         </Routes>
     </BrowserRouter>
