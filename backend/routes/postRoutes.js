@@ -6,16 +6,23 @@ const {createPost,getAllPosts,getFeed,toggleLike,addComment,deletePost}=require(
 const User = require("../models/User")
 
 
-router.use(auth,async (req,res,next)=>{
-    const user=await User.findById(req.user)
-    req.userFollowing=user.following
-    next()
-})
+
 router.post("/",auth,upload.single("image"),createPost)
-router.get("/all",getAllPosts)
-router.get("/feed",getFeed)
-router.put("/like/:id",toggleLike)
-router.post("/comment/:id",addComment)
-router.delete("/:id",deletePost)
+router.get("/all",auth,getAllPosts)
+router.get("/feed",auth,async (req,res,next)=>{
+    try {
+        const user=await User.findById(req.user)
+        if (!user){
+            return res.status(401).json({msg:"User not found"})
+        }
+        req.userFollowing=user.following
+        next()
+    } catch (err) {
+        res.status(500).json({error:err.message})
+    }
+},getFeed)
+router.put("/like/:id",auth,toggleLike)
+router.post("/comment/:id",auth,addComment)
+router.delete("/:id",auth,deletePost)
 
 module.exports=router

@@ -13,10 +13,7 @@ const Navbar = () => {
             <button onClick={logout}>Logout</button>
             <Link to="/profile">Profile</Link>
             <Link to="/developers">Developers</Link>
-            
-
-
-
+            <Link to="/create-post">CreatePost</Link>
             </>
         ):(
             <>

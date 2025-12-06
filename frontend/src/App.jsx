@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import EditPage from './pages/EditPage'
 import DeveloperProfile from './pages/DeveloperProfile'
 import Developers from './pages/Developers'
+import CreatePost from './pages/CreatePost'
 const App = () => {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/edit-profile" element={<ProtectedRoute><EditPage /></ProtectedRoute>} />
           <Route path='/developers' element={<ProtectedRoute><Developers/></ProtectedRoute>}/>
           <Route path='/developer/:id' element={<ProtectedRoute><DeveloperProfile/></ProtectedRoute>}/>
+          <Route path='/create-post' element={<ProtectedRoute><CreatePost/></ProtectedRoute>}/>
 
         </Routes>
     </BrowserRouter>

@@ -2,6 +2,9 @@ const Post=require("../models/Post.js")
 
 exports.createPost=async (req,res)=>{
     try {
+        if (!req.body) {
+        return res.status(400).json({ msg: "Form data not received" });
+        }
         const {content}=req.body
         const image=req.file?req.file.path:""
         const post=new Post({
@@ -27,7 +30,7 @@ exports.getAllPosts=async (req,res)=>{
 
 exports.getFeed=async (req,res)=>{
     try {
-        const following=req.userFollowing
+        const following=req.userFollowing || []
         const userId=req.user
         const post=await Post.find({
             author:{$in:[...following,userId]}
@@ -71,10 +74,10 @@ exports.deletePost=async (req,res)=>{
     try {
         const post=await Post.findById(req.params.id)
          if (!post) {
-        return res.status(404).json({ msg: "Post not found" });
+            return res.status(404).json({ msg: "Post not found" });
         }
         if (post.author.toString()!==req.user){
-            res.json({msg:"User not authorized"})
+            return res.status(403).json({msg:"User not authorized"})
         }
         await post.deleteOne()
         res.json(post)
