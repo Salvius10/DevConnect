@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getAllPosts } from "../api/postApi";
+import PostCard from "../components/PostCard";
 
 const AllPosts = () => {
   const { token } = useAuth();
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -13,43 +15,25 @@ const AllPosts = () => {
         setPosts(data);
       } catch (err) {
         console.log("ALL POSTS ERROR:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPosts();
   }, [token]);
 
+  if (loading) return <p>Loading posts...</p>;
+
   return (
     <div>
       <h2>All Posts</h2>
 
       {posts.length === 0 ? (
-        <p>No posts available</p>
+        <p>No posts available.</p>
       ) : (
         posts.map((post) => (
-          <div
-            key={post._id}
-            style={{
-              border: "1px solid #ccc",
-              margin: "10px",
-              padding: "10px",
-            }}
-          >
-            <p>
-              <b>{post.author?.name}</b>
-            </p>
-
-            <p>{post.content}</p>
-
-            {post.image && (
-              <img
-                src={`http://localhost:5000/${post.image}`}
-                alt="post"
-                width="250"
-              />
-            )}
-
-          </div>
+          <PostCard key={post._id} post={post} />
         ))
       )}
     </div>

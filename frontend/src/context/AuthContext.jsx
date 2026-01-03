@@ -24,6 +24,8 @@ export const AuthProvider=({children})=>{
         localStorage.removeItem("devconnect-user")
         localStorage.removeItem("devconnect-token")
     }
+    console.log("TOKEN:", token);
+
     return(
         <AuthContext.Provider value={{user,token,login,logout}}>
             {children}

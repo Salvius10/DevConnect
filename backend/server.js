@@ -1,5 +1,7 @@
 const express=require("express");
 const mongoose=require("mongoose")
+mongoose.set("strictPopulate", false);
+
 const dotenv=require("dotenv")
 const cors=require("cors")
 const app=express()

@@ -21,7 +21,11 @@ exports.createPost=async (req,res)=>{
 
 exports.getAllPosts=async (req,res)=>{
     try {
-        const post=await Post.find().populate("author","name email profilephoto").sort({createdAt:-1})
+        const post=await Post.find().populate("author","name email profilephoto").populate({
+  path: "comments.user",
+  select: "name",
+  options: { strictPopulate: false }
+}).sort({createdAt:-1})
         res.json(post)
     } catch (err) {
         res.status(500).json({error:err.message})
@@ -34,7 +38,11 @@ exports.getFeed=async (req,res)=>{
         const userId=req.user
         const post=await Post.find({
             author:{$in:[...following,userId]}
-        }).populate("author","name email profilephoto").sort({createdAt:-1})
+        }).populate("author","name email profilephoto").populate({
+  path: "comments.user",
+  select: "name",
+  options: { strictPopulate: false }
+}).sort({createdAt:-1})
         res.json(post)
     } catch (err) {
         res.status(500).json({error:err.message})

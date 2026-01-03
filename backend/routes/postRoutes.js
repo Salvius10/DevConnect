@@ -9,18 +9,26 @@ const User = require("../models/User")
 
 router.post("/",auth,upload.single("image"),createPost)
 router.get("/all",auth,getAllPosts)
-router.get("/feed",auth,async (req,res,next)=>{
+router.get(
+  "/feed",
+  auth,
+  async (req, res, next) => {
     try {
-        const user=await User.findById(req.user)
-        if (!user){
-            return res.status(401).json({msg:"User not found"})
-        }
-        req.userFollowing=user.following
-        next()
+      const user = await User.findById(req.user);
+
+      if (!user) {
+        return res.status(401).json({ msg: "User not found" });
+      }
+
+      req.userFollowing = user.following || [];
+      next();
     } catch (err) {
-        res.status(500).json({error:err.message})
+      return res.status(500).json({ error: err.message });
     }
-},getFeed)
+  },
+  getFeed
+);
+
 router.put("/like/:id",auth,toggleLike)
 router.post("/comment/:id",auth,addComment)
 router.delete("/:id",auth,deletePost)
